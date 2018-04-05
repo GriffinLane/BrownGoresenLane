@@ -8,7 +8,6 @@ from imdb import IMDb
 import tmdbsimple as tmdb
 import pandas as pd
 import progressbar as prog
-import json
 
 
 tmdb.API_KEY = '43c26e89f50364998e6d406599d25aa5'
@@ -29,8 +28,8 @@ def GetRawMovies():
             raw_movie_data = tmdb.Movies(i).info() 
             sifted_data = list()
             for key in items_requested:
-                if key in ['production_companies','production_countries','genres']:
-                    print(raw_movie_data.get(key)["name"])
+                #if key in ['production_companies','production_countries','genres']:
+                    #print(raw_movie_data.get(key)[0]["name"])
                 sifted_data.append(raw_movie_data.get(key))
             raw_movies.append(sifted_data)
             g+=1
