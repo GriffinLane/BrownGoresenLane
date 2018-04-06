@@ -31,8 +31,8 @@ def GetRawMovies():
                 if key in ['production_companies','production_countries','genres']:
                     count = len(raw_movie_data.get(key))
                     attribValue = str("")
-                    for i in range(count):
-                        attribValue += raw_movie_data.get(key)[i]["name"] + ( "" if i == (count-1) else ",")
+                    for j in range(count):
+                        attribValue += raw_movie_data.get(key)[j]["name"] + ( "" if j == (count-1) else ",")
                     sifted_data.append(attribValue)
                 else: 
                     sifted_data.append(raw_movie_data.get(key))
