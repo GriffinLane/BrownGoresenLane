@@ -18,7 +18,7 @@ print('tmdbsimple version ' + tmdb.__version__)
 
 def GetRawMovies():
     i,g = 1,0 #1 throws error on tmdb
-    totalMoviesRequested = 1
+    totalMoviesRequested = 10000
     raw_movies = list()
     items_requested = ['revenue','vote_average','vote_count','title','original_language','release_date','production_companies','production_countries','genres']
     keep_mining = True
@@ -32,15 +32,14 @@ def GetRawMovies():
                     count = len(raw_movie_data.get(key))
                     attribValue = str("")
                     for i in range(count):
-                        attribValue += raw_movie_data.get(key)[i]["name"]
-                        + ( "" if i == (count-1) else ",")
+                        attribValue += raw_movie_data.get(key)[i]["name"] + ( "" if i == (count-1) else ",")
                     sifted_data.append(attribValue)
                 else: 
                     sifted_data.append(raw_movie_data.get(key))
             raw_movies.append(sifted_data)
             g+=1
-            bar.update(g)
             i+=1
+            bar.update(g)
         except:
             i+=1
             pass
