@@ -73,10 +73,12 @@ if(raw_movies is not None):
 ####cross with IMDb
 #Get list of titles to search IMDb for
 raw_movies = pd.read_csv('Movies.csv')
-for i in range(len(raw_movies)):
+movieData = list()
+desiredAttributes = ["director","producer","cast"]
+for i in range(3    ):
     #Match title and year
     year = raw_movies['release_date'][i][:4]
-    movie = list()
+    
     # Search for a movie (get a list of Movie objects).
     s_result = db.search_movie(raw_movies["title"][i])
     
@@ -84,8 +86,18 @@ for i in range(len(raw_movies)):
         if year in item['long imdb canonical title'] and item['kind'] is 'movie':
             db.update(item)
             movie = item
-            
-    print(movie['title'],"   Has ",len(movie['director']), " directors.")
+    
+    dbData = list()
+    for key in desiredAttributes:
+        count = len(movie[key])
+        attribValue = str("")
+        for c in range(10 if count > 10 else count):
+            attribValue += str(movie[key][c]) + ("" if c == (count-1) else ",")                        
+        dbData.append(attribValue)
+    
+    movieData.append(dbData)
+print(movieData)
+#    print(movie['title'],movie['cast'][0],movie['cast'][1],movie['cast'][2])
         #print(item['long imdb canonical title'], item.movieID)
 
 
