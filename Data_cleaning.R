@@ -58,14 +58,24 @@ summary(movieClean$release_date)
 movieClean <- separate(movieClean, release_date, c("release_year", "release_month"), sep = "-", remove = TRUE,convert = FALSE, extra = "drop")
 
 
+#### Looking at Cast Variable ####
+summary(movieClean)
+#Cast contains three actor names
+#We will split into three variables 
+movieClean1 <- separate(movieClean, cast, c("Actor1", "Actor2", "Actor3"), sep = ",", remove = TRUE,convert = FALSE, extra = "drop")
+#Now we want to find the top five actors in each 
+actor1 <- data.frame(table(movieClean1$Actor1))
+actor2 <- data.frame(table(movieClean1$Actor2))
+actor3 <- data.frame(table(movieClean1$Actor3))
+# Combine them into one data frame
+total <- merge(actor1, actor2, by= "Var1", all = TRUE)
+total <- merge(total, actor3, by="Var1", all=TRUE)
+# Now sum each frequency together
+total$grandTotal <- rowSums(total[,c("Freq", "Freq.x", "Freq.y")], na.rm=TRUE)
+# Now plot Top 50 most popular actors
+total <- arrange(total,-grandTotal)
+total<- total[1:50,]
+#Plot on Bar Graph
+ggplot(total, aes(reorder(x=Var1, grandTotal), y=grandTotal)) + geom_bar(stat= "identity") + coord_flip()
 
-
-
-
-############# T-SNE to Reduce Diminsionality ################
-install.packages("Rtsne")
-library(Rtsne)
-colors = rainbow(length(unique(movieData2)))
-names(colors) = unique(movieData2)
-tsne <- Rtsne(movieData2[,-1], dims = 2, perplexity=30, verbose=TRUE, max_iter = 500)
 
