@@ -2,6 +2,7 @@
 library(dplyr)
 library(ggplot2)
 library(plyr)
+library(tidyr)
 # import data set
 setwd("~/Desktop/MSDS 7330/Project/BrownGoresenLane")
 movieData <- read.csv("./Movies.csv")
@@ -49,6 +50,13 @@ ggplot(writCount, aes(reorder(x=x, freq), y=freq)) + geom_bar(stat= "identity") 
 #Keep top three, label rest as 'other'
 TopThreeWriters <- c("Woody Allen", "John Hughes", "Don Hartman,Frank Butler,Harry Hervey,")
 movieClean <- transform(movieClean, writer = ifelse(writer %in% TopThreeWriters, as.character(writer), "Other"))
+
+#### Looking at Release Date ####
+summary(movieClean$release_date)
+#Dates are broken up into yyyy-mm-dd
+#We will create seperate columns for month and year and delete day
+movieClean <- separate(movieClean, release_date, c("release_year", "release_month"), sep = "-", remove = TRUE,convert = FALSE, extra = "drop")
+
 
 
 
