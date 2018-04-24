@@ -4,6 +4,9 @@ library(ggplot2)
 library(plyr)
 library(tidyr)
 library(randomForest)
+library(caret)
+library(DAAG)
+library(MASS)
 # import data set
 setwd("~/Desktop/MSDS 7330/Project/BrownGoresenLane")
 movieData <- read.csv("./Movies.csv")
@@ -229,28 +232,25 @@ movieData <- subset(movieData, select = -production_country2)
 #### EXPORT CLEANED DATA SET ####
 write.csv(movieData, file = "movieData.csv")
 
-#########################################################
-#               EXPLORING DATA ANALYSIS                 #
-#########################################################
-#Exploring Most 
-
-#Vote Average and 
-
-
 
 #########################################################
-#                     RANDOM FOREST                     #
+#                PREDICTING REVENUE                    #
 #########################################################
-rf_model <- randomForest(x = as.data.frame(movieClean[,-1]), y = movieClean$revenue , importance = TRUE)
-rf_model
-varImpPlot(rf_model)
-importance(rf_model)
-top_rf <- names(tail(sort(importance(rf_model)[,3]),5))
-
-
-#########################################################
-#                   PREDICTING VOTES                    #
-#########################################################
-
-
+movieData$revenue <- log(movieData$revenue)
+#Random Forest
+movieData1 <- subset(movieData, select = -title)
+mtry <- tuneRF(movieData1[,-2],movieData1$revenue, ntreeTry=500,
+               stepFactor=1.5,improve=0.01, trace=TRUE, plot=TRUE)
+best.m <- mtry[mtry[, 2] == min(mtry[, 2]), 1]
+print(mtry)
+print(best.m)
+rf <-randomForest(revenue~.,data=movieData[,-5], mtry=best.m, importance=TRUE,ntree=500)
+print(rf)
+importance(rf)
+varImpPlot(rf)
+# MLR with stepwise AIC selection
+model <- cv.lm(revenue ~. , data = movieData[,-5], m=5)
+summary(model)
+model1 <- stepAIC(model, direction = "both")
+summary(model1)
 
